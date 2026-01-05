@@ -708,13 +708,12 @@
         let excludedMasjids = new Set(); // Set untuk menyimpan masjid yang dikecualikan
         let acakHistory = {}; // Menyimpan tanggal yang sudah diacak
         
-// Daftar 8 muballigh
+        // Daftar 8 muballigh
         const muballighList = ["Ust. Abdul Ghofur, S.Ag.","KH. Abdul Latif Dahlan","Ust. Abdul Rahman","Ust. Abdul Wahhab","Ust. Abdullah Dahlan","Ust. Abdullah Faqih A","Ust. Abdullah Kholish","Ust. Abdulloh Mujib, S.Pd.","Ust. Abdur Rozaq, S.Pd.I.","KH. Achmad Buchori NH","Ust. Achmad Nidhom","Ust. Achmad Riwayadi, S.Pd.","Ust. Achmad Supardi Rahman","KH. Adam Mansur","Ust. Adi Suwito, M.Pd.","Ust. Ahmad Fathoni, S.Pd.I.","Ust. Ahmad Fauzi Asfar,S.Pd.I.","Ust. Ahmad Fauzi Mansur, S.Pd.","KH. Ahmad Mizan Hilmi","Ust. Ahmad Sudai, S.Ag.","Ust. Ahmad Yusuf ZM, S.Pd.I","Ust. Alamsyah, S.Pd.","Ust. H. Ali Mustofa","Ust. Aly Musthofa, S.Pd.","Ust. Anwar Musyaddad, S.E.","Ust. H. Athoillah, M.Pd.","Ust. Cholid Irfani, S.E.","Ust. H. Chusnul Dihin","Ust. Dede Adnan, S.S., M.Pd.","Ust. Didik, S.Pd.","Ust. Drs. H. Muh. Arif Waris","Ust. Drs. H. Yarkani","Ust. Fahmi Ilyasa Fajeri","Ust. Hikmat Abdurrahman, M.Pd.","Ust. Imron Rosyadi, S.Pd.","Ust. Isadur Rofiqi Yahya","KH. Ishlahuddin Syuaib, S.Pd.","Ust. Ismail Syah, S.Pd.I.","Ust. Jehan Fiqhi, Lc. M.Sosio.","Ust. H. Khoirul Amin, S.Pd.I, M.M.","Ust. Khoirul Anwar, SPd.I.","KH. Khumaini Rosadi, M.Ag.","Ust. H. Luqman Hakim, S.Ag.","Ust. Luthfi Hakim, SPd.","Ust. M. Alaik Syaifullah, S.PdI.","Ust. M. Baron Sukma D., S.Pd.I.","Ust. M. Nur Hidayat, M.Pd.","Ust. H. M. Saerozi","KH. M. Sulhan, S.Ag.","Ust. Masrukin","Ust. Miftahul Alim, S.Pd.I.","Ust. Moh. Bahri, M.Pd.","KH. Moh. Mulkan Adzima","KH. Moh. Solikhin, M.Pd.","Ust. Moh. Syamsul Arifin","KH. Moh. Tabi'in Noor","KH. Muchtar","Ust. Muh. Ilham H, S.Pd.I.","Ust. Muh. Syafi'i, S.PdI","Ust. Muh. Syamsul Ma'arif","Ust. Muhammad Abdul Karim","Ust. Muhammad Dimyati","Ust. Muhammad Ishaq","Ust. Muhammad Romli","Ust. Muhammad Zaky","Ust. Muhtarom Al-Hafidz, S.Q.","Ust. Nanang Fahruzzaini","Ust. Nur  Mahrozi, S.E.","Ust. Randi Fadillah","Ust. Ridwan Mujib, M.Ag","Ust. Rusdiyanto, S.E.","Ust. Salman Fuadi, S.Ag","Ust. Samsirah, S.Pd.I","Ust. Slamet Raharjo, S.T.","Ust. H. Slamet Widodo, S.PdI","Ust. Soleh Maksum, S.Ag","Ust. H. Sugian Noor, M.Pd.","Ust. H. Sunanto","Ust. Sunaryo","Ust. Suyitno, S.Pd.","Ust. Ubaidillah","Ust. Wahyudi","Ust. Yahya Irawan","Ust. H. Zainal Abidin","Ust. Zakaria Rahman","Ust. Zakaria Al Anshori, Amd."];
         
         // Daftar 78 masjid (disederhanakan)
         const masjidList = ["ADZIKRU","Al FITRAH - Gang Amalia","AL-AKBAR - Loktuan","AL-AMIN","AL-ANSHAR - Pelabuhan T. Laut","AL-ANSHOR","AL-ANWAR - Loktuan","AL-AQRABUN","AL-ASRI","AL-BAITSU","ALBAROKAH - Gg. Jati","AL-FATTAH - Pisangan","AL-FATTAH - PLTD","AL-HAYYAT","AL-HIDAYAH - Gang Malvinas","AL-HIDAYAH - Gunung Sari","AL-HIJRAH - Sidrap Dalam","AL-HIJRAH - Tanjung Laut","AL-HIKMAH - Guntung","AL-HIKMAH - Loktuan","AL-HIKMAH LETTA - Btg - Smd","AL-IKHLAS - BTN PKT","AL-IKHLAS - Loktuan","AL-ISTIQAMAH - Btg Baru","AL-ISTIQOMAH - Sidrap Luar","AL-JABAL BSD","AL-JIHAD","AL-MISBAH - Btg Kuala","AL-MUBARAK - Depan SMAN 2","AL-MUBARAK","AL-MUFLIHUN","AL-MUHAJIRIN - Bukit Indah","AL-MUKARRAMAH","AL-MUNAWWARAH","AL-MUSTAQIIM","AL-QAHHAR","AL-WAHHAB","AN-NAMIRAH","AS-SALAM - Perum Disnaker","ASY-SYUHADA - Berbas","AT-TANWIR","AT-TAQWA - Salebba","AT-TAUBAH","BABUR RAHMAH","BAITUL IMAN - Lengkol","BAITUL ISLAM - Post 7","BAITUL MAKMUR - Lang-lang","BAITUL MAQDIS","BAITUR RAHIM","DAARUL MUTTAQIN","DAR AL TAWHID","DARUL IRSYAD - Terapung LT","HIBATULLAH","HIBBATUL HAQQI","HIDAYATUL MUSTHOFA","HUBUL IMAN","IBNU SINA - RSUD","JAMIATUL HIKMAH","LAPAS - Bontang Lestari","MIFTAHUL HUDA","MIFTAHUL JANNAH - Guntung","NURUL HIDAYAH - Al-Ihsan","NURUL HUDA - Guntung","RAUDHOTUL JANNAH","RAUDHOTUT THOLIBIN","ROUDLOTUL MUTTAQIN- POLRES","SABILUL MUTTAQIN-Vulkanik 2","SABILUN NAJAH","ULUL ALBAB - Perum Pama","THORIQUL JANNAH - Kanaan"];
        
-        
         // Fungsi untuk menampilkan status
         function showStatus(message, type) {
             const statusEl = document.getElementById('statusMessage');
@@ -1406,13 +1405,18 @@
                     },
                     bodyStyles: { fontSize: 9 },
                     columnStyles: {
-                        0: { cellWidth: 10 },
-                        1: { cellWidth: 100 },
-                        2: { cellWidth: 70 }
+                        0: { cellWidth: 15, halign: 'center' }, // PERUBAHAN: Lebarkan dan center
+                        1: { cellWidth: 95 }, // PERUBAHAN: Sesuaikan lebar
+                        2: { cellWidth: 65 }  // PERUBAHAN: Sesuaikan lebar
                     },
                     margin: { left: 10, right: 10 },
                     styles: { overflow: 'linebreak' },
                     didParseCell: function(data) {
+                        // PERUBAHAN: Center semua nomor
+                        if (data.column.index === 0 && data.row.index > 0) {
+                            data.cell.styles.halign = 'center';
+                        }
+                        
                         // Warna baris untuk masjid yang dikecualikan
                         if (data.row.index > 0 && data.cell.text[2] === 'Tidak dijadwalkan') {
                             data.cell.styles.fillColor = [255, 243, 205]; // Kuning muda
@@ -1478,7 +1482,7 @@
             }
         }
         
-        // Fungsi untuk membuat PDF untuk rentang tanggal (lebih dari 1 hari)
+        // Fungsi untuk membuat PDF untuk rentang tanggal (lebih dari 1 hari) - DIPERBAIKI
         function createMultiDatePDF(startDate, endDate) {
             try {
                 const { jsPDF } = window.jspdf;
@@ -1625,8 +1629,8 @@
                     },
                     bodyStyles: { fontSize: 8 },
                     columnStyles: {
-                        0: { cellWidth: 10 },
-                        1: { cellWidth: 70 }
+                        0: { cellWidth: 15, halign: 'center' }, // PERUBAHAN: Lebarkan dan center kolom nomor
+                        1: { cellWidth: 65 }  // PERUBAHAN: Sesuaikan lebar
                     },
                     margin: { left: 5, right: 5 },
                     styles: { 
@@ -1634,6 +1638,11 @@
                         cellPadding: 3
                     },
                     didParseCell: function(data) {
+                        // PERUBAHAN: Center semua nomor
+                        if (data.column.index === 0 && data.row.index > 0) {
+                            data.cell.styles.halign = 'center';
+                        }
+                        
                         // Warna baris untuk masjid yang dikecualikan
                         if (data.row.index > 0 && data.cell.text[1] && data.cell.text[1].includes('Dikecualikan')) {
                             data.cell.styles.fillColor = [255, 243, 205]; // Kuning muda
@@ -1654,6 +1663,64 @@
                                 baseline: 'middle'
                             });
                             return false; // Tidak menggambar teks normal
+                        }
+                    }
+                });
+                
+                // Update posisi Y setelah tabel
+                let currentY = doc.lastAutoTable.finalY + 15;
+                
+                // TAMBAHKAN BAGIAN MUBALLIGH STANDBY UNTUK SETIAP TANGGAL - PERUBAHAN PENTING
+                datesWithData.forEach(date => {
+                    if (currentY > pageHeight - 40) {
+                        doc.addPage();
+                        currentY = 20;
+                    }
+                    
+                    // Ambil data untuk tanggal ini
+                    if (jadwalByDate[date] && jadwalByDate[date].putaran.length > 0) {
+                        const putaran = jadwalByDate[date].putaran[0];
+                        
+                        // Hitung muballigh yang sudah ditugaskan
+                        const assignedMuballigh = new Set();
+                        putaran.forEach(item => {
+                            if (item.muballigh && !excludedMasjids.has(item.masjid)) {
+                                assignedMuballigh.add(item.muballigh);
+                            }
+                        });
+                        
+                        // Tampilkan muballigh standby
+                        const standbyMuballigh = muballighList.filter(m => !assignedMuballigh.has(m));
+                        
+                        if (standbyMuballigh.length > 0) {
+                            // Format tanggal untuk judul
+                            const formattedDate = new Date(date).toLocaleDateString('id-ID', {
+                                weekday: 'long',
+                                day: 'numeric',
+                                month: 'long',
+                                year: 'numeric'
+                            });
+                            
+                            // Judul muballigh standby
+                            doc.setFontSize(11);
+                            doc.setTextColor(231, 76, 60);
+                            doc.text(`MUBALLIGH STANBY (${formattedDate}):`, 14, currentY);
+                            currentY += 8;
+                            
+                            doc.setFontSize(9);
+                            doc.setTextColor(0, 0, 0);
+                            
+                            // Tampilkan daftar muballigh standby
+                            standbyMuballigh.forEach((muballigh, i) => {
+                                if (currentY > pageHeight - 20) {
+                                    doc.addPage();
+                                    currentY = 20;
+                                }
+                                doc.text(`• ${muballigh}`, 20, currentY);
+                                currentY += 6;
+                            });
+                            
+                            currentY += 10; // Spasi antar tanggal
                         }
                     }
                 });
