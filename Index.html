@@ -1,0 +1,2011 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jadwal Khutbah Acak</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            align-items: center;
+        }
+        
+        .date-input, .action-buttons, .exclusion-controls {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .exclusion-controls {
+            flex: 1;
+        }
+        
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+        
+        input[type="date"], select {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            min-width: 200px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+        
+        .btn-warning {
+            background-color: #f39c12;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background-color: #d68910;
+            transform: translateY(-2px);
+        }
+        
+        .counter {
+            padding: 10px 15px;
+            background-color: #f1c40f;
+            border-radius: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .counter span {
+            font-size: 1.2em;
+            color: #e74c3c;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            font-weight: 600;
+        }
+        
+        tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        tbody tr:hover {
+            background-color: #ecf0f1;
+        }
+        
+        .stanby-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            border-left: 5px solid #e74c3c;
+        }
+        
+        .stanby-title {
+            font-weight: 700;
+            color: #e74c3c;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        .stanby-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .stanby-item {
+            background-color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-weight: 600;
+        }
+        
+        .exclusion-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+            max-height: 100px;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        
+        .exclusion-item {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .remove-exclusion {
+            background: none;
+            border: none;
+            color: #721c24;
+            cursor: pointer;
+            font-size: 1.2em;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .remove-exclusion:hover {
+            background-color: #f5c6cb;
+        }
+        
+        .exclusion-count {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 0.9em;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .status-message {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-align: center;
+            display: none;
+        }
+        
+        .status-success {
+            background-color: #d5edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        
+        .status-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+            display: block;
+        }
+        
+        .status-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            display: block;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        .modal-title {
+            font-size: 1.5em;
+            color: #2c3e50;
+            font-weight: 700;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+        
+        .modal-body {
+            margin-bottom: 20px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .date-range-selector {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .date-range-selector label {
+            min-width: 100px;
+        }
+        
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        
+        .history-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        
+        .history-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .history-item.active {
+            background-color: #3498db;
+            color: white;
+            border-radius: 3px;
+        }
+        
+        .history-date {
+            font-weight: 600;
+        }
+        
+        .history-count {
+            float: right;
+            background-color: #f1c40f;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.8em;
+        }
+        
+        .masjid-list-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        
+        .masjid-checkbox-item {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+        
+        .masjid-checkbox-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .masjid-checkbox-item input {
+            margin-right: 10px;
+        }
+        
+        .masjid-checkbox-item label {
+            font-weight: normal;
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        .masjid-search {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .selected-count {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #3498db;
+            font-weight: 600;
+        }
+        
+        .excluded-badge {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            margin-left: 8px;
+            font-weight: 600;
+        }
+        
+        .acak-info {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e8f4fc;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+        
+        .acak-disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .date-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        
+        .date-item {
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .date-input, .action-buttons, .exclusion-controls {
+                width: 100%;
+            }
+            
+            .action-buttons {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+            
+            .btn {
+                flex: 1;
+            }
+            
+            th, td {
+                padding: 8px 10px;
+                font-size: 0.9em;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: 20px;
+            }
+            
+            .date-range-selector {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+    <!-- Library untuk PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Jadwal Khutbah Jumat LDNU Bontang</h1>
+        <div class="subtitle">oleh Tim IT LDNU Bontang</div>
+        
+        <div class="status-message" id="statusMessage"></div>
+        
+        <div class="controls">
+            <div class="date-input">
+                <label for="tanggal">Pilih Tanggal Khutbah:</label>
+                <input type="date" id="tanggal" value="">
+                <div class="acak-info" id="acakInfo">
+                    <!-- Informasi status pengacakan akan ditampilkan di sini -->
+                </div>
+            </div>
+            
+            <div class="counter">
+                Putaran Hari Ini: <span id="acakCounter">0</span>/1
+            </div>
+            
+            <div class="exclusion-controls">
+                <label>Masjid yang Dikecualikan:</label>
+                <div class="exclusion-list" id="exclusionList">
+                    <!-- Daftar masjid yang dikecualikan akan muncul di sini -->
+                    <span style="color:#7f8c8d; font-style:italic" id="noExclusionText">Tidak ada masjid yang dikecualikan</span>
+                </div>
+                <div class="exclusion-count" id="exclusionCount">0 masjid dikecualikan</div>
+                <button class="btn btn-warning" id="btnKelolaExclusion" style="margin-top: 10px; padding: 8px 15px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1V2zm1 12h2V2h-2v12zm-3 0V7H7v7h2zm-5 0v-3H2v3h2z"/>
+                    </svg>
+                    Kelola Pengecualian Masjid
+                </button>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="btnAcak">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                    </svg>
+                    Acak Jadwal
+                </button>
+                <button class="btn btn-secondary" id="btnSimpanPDF">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                        <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                    </svg>
+                    Simpan ke PDF
+                </button>
+                <button class="btn btn-danger" id="btnReset">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"/>
+                        <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z"/>
+                    </svg>
+                    Reset
+                </button>
+            </div>
+        </div>
+        
+        <div class="table-container">
+            <table id="jadwalTable">
+                <thead>
+                    <tr>
+                        <th width="5%">No</th>
+                        <th width="60%">Nama Masjid</th>
+                        <th width="35%">Nama Muballigh</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Data akan diisi oleh JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="stanby-section">
+            <div class="stanby-title">Muballigh Stanby (Tidak Terjadwal)</div>
+            <div class="stanby-list" id="stanbyList">
+                <!-- Daftar muballigh standby akan muncul di sini -->
+            </div>
+        </div>
+        
+        <div class="footer">
+            Sistem Jadwal Khutbah Jumat &copy; 2026 LDNU Bontang
+        </div>
+    </div>
+
+    <!-- Modal untuk pilihan tanggal saat download PDF -->
+    <div class="modal" id="pdfModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Simpan Jadwal ke PDF</div>
+                <button class="close-modal" id="closePdfModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="date-range-selector">
+                    <label for="pdfStartDate">Dari Tanggal:</label>
+                    <input type="date" id="pdfStartDate" value="">
+                </div>
+                
+                <div class="date-range-selector">
+                    <label for="pdfEndDate">Sampai Tanggal:</label>
+                    <input type="date" id="pdfEndDate" value="">
+                </div>
+                
+                <div id="singleDateSection" style="display: none;">
+                    <label for="pdfTanggal">Pilih Tanggal:</label>
+                    <select id="pdfTanggal">
+                        <!-- Opsi tanggal akan diisi oleh JavaScript -->
+                    </select>
+                    
+                    <div style="margin-top: 20px;">
+                        <label>Pilih Putaran yang akan disimpan:</label>
+                        <div class="history-list" id="pdfHistoryList">
+                            <!-- Daftar putaran akan diisi oleh JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="dateRangeInfo" style="margin-top: 20px; padding: 10px; background-color: #f8f9fa; border-radius: 5px; display: none;">
+                    <strong>Info:</strong> Akan menampilkan jadwal per masjid untuk rentang waktu yang dipilih.
+                </div>
+                
+                <div id="selectedDatesList" class="date-list" style="display: none;">
+                    <!-- Daftar tanggal yang dipilih akan muncul di sini -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="btnGeneratePDF">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                        <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                    </svg>
+                    Buat PDF
+                </button>
+                <button class="btn btn-danger" id="btnCancelPDF">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal untuk mengelola pengecualian masjid -->
+    <div class="modal" id="exclusionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Kelola Pengecualian Masjid</div>
+                <button class="close-modal" id="closeExclusionModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Pilih masjid yang tidak ingin diikutsertakan dalam pengacakan jadwal:</p>
+                
+                <input type="text" class="masjid-search" id="masjidSearch" placeholder="Cari masjid...">
+                
+                <div class="masjid-list-container" id="masjidListContainer">
+                    <!-- Daftar masjid dengan checkbox akan diisi oleh JavaScript -->
+                </div>
+                
+                <div class="selected-count" id="selectedCount">0 masjid dipilih</div>
+                
+                <div style="margin-top: 20px; padding: 10px; background-color: #f8f9fa; border-radius: 5px;">
+                    <strong>Catatan:</strong> Masjid yang dikecualikan tidak akan mendapat penugasan muballigh saat pengacakan jadwal.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="btnSimpanExclusion">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
+                    </svg>
+                    Simpan Pengecualian
+                </button>
+                <button class="btn btn-danger" id="btnBatalExclusion">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Inisialisasi data
+        let acakCounter = 0;
+        const maxAcakPerDay = 1; // Maksimal 1 kali acak per hari
+        let jadwalData = [];
+        let jadwalHistory = {}; // Menyimpan riwayat penugasan muballigh ke masjid
+        let jadwalByDate = {}; // Menyimpan semua jadwal berdasarkan tanggal
+        let currentDate = ""; // Tanggal yang sedang aktif
+        let excludedMasjids = new Set(); // Set untuk menyimpan masjid yang dikecualikan
+        let acakHistory = {}; // Menyimpan tanggal yang sudah diacak
+        
+// Daftar 8 muballigh
+        const muballighList = ["Ust. Abdul Ghofur, S.Ag.","KH. Abdul Latif Dahlan","Ust. Abdul Rahman","Ust. Abdul Wahhab","Ust. Abdullah Dahlan","Ust. Abdullah Faqih A","Ust. Abdullah Kholish","Ust. Abdulloh Mujib, S.Pd.","Ust. Abdur Rozaq, S.Pd.I.","KH. Achmad Buchori NH","Ust. Achmad Nidhom","Ust. Achmad Riwayadi, S.Pd.","Ust. Achmad Supardi Rahman","KH. Adam Mansur","Ust. Adi Suwito, M.Pd.","Ust. Ahmad Fathoni, S.Pd.I.","Ust. Ahmad Fauzi Asfar,S.Pd.I.","Ust. Ahmad Fauzi Mansur, S.Pd.","KH. Ahmad Mizan Hilmi","Ust. Ahmad Sudai, S.Ag.","Ust. Ahmad Yusuf ZM, S.Pd.I","Ust. Alamsyah, S.Pd.","Ust. H. Ali Mustofa","Ust. Aly Musthofa, S.Pd.","Ust. Anwar Musyaddad, S.E.","Ust. H. Athoillah, M.Pd.","Ust. Cholid Irfani, S.E.","Ust. H. Chusnul Dihin","Ust. Dede Adnan, S.S., M.Pd.","Ust. Didik, S.Pd.","Ust. Drs. H. Muh. Arif Waris","Ust. Drs. H. Yarkani","Ust. Fahmi Ilyasa Fajeri","Ust. Hikmat Abdurrahman, M.Pd.","Ust. Imron Rosyadi, S.Pd.","Ust. Isadur Rofiqi Yahya","KH. Ishlahuddin Syuaib, S.Pd.","Ust. Ismail Syah, S.Pd.I.","Ust. Jehan Fiqhi, Lc. M.Sosio.","Ust. H. Khoirul Amin, S.Pd.I, M.M.","Ust. Khoirul Anwar, SPd.I.","KH. Khumaini Rosadi, M.Ag.","Ust. H. Luqman Hakim, S.Ag.","Ust. Luthfi Hakim, SPd.","Ust. M. Alaik Syaifullah, S.PdI.","Ust. M. Baron Sukma D., S.Pd.I.","Ust. M. Nur Hidayat, M.Pd.","Ust. H. M. Saerozi","KH. M. Sulhan, S.Ag.","Ust. Masrukin","Ust. Miftahul Alim, S.Pd.I.","Ust. Moh. Bahri, M.Pd.","KH. Moh. Mulkan Adzima","KH. Moh. Solikhin, M.Pd.","Ust. Moh. Syamsul Arifin","KH. Moh. Tabi'in Noor","KH. Muchtar","Ust. Muh. Ilham H, S.Pd.I.","Ust. Muh. Syafi'i, S.PdI","Ust. Muh. Syamsul Ma'arif","Ust. Muhammad Abdul Karim","Ust. Muhammad Dimyati","Ust. Muhammad Ishaq","Ust. Muhammad Romli","Ust. Muhammad Zaky","Ust. Muhtarom Al-Hafidz, S.Q.","Ust. Nanang Fahruzzaini","Ust. Nur  Mahrozi, S.E.","Ust. Randi Fadillah","Ust. Ridwan Mujib, M.Ag","Ust. Rusdiyanto, S.E.","Ust. Salman Fuadi, S.Ag","Ust. Samsirah, S.Pd.I","Ust. Slamet Raharjo, S.T.","Ust. H. Slamet Widodo, S.PdI","Ust. Soleh Maksum, S.Ag","Ust. H. Sugian Noor, M.Pd.","Ust. H. Sunanto","Ust. Sunaryo","Ust. Suyitno, S.Pd.","Ust. Ubaidillah","Ust. Wahyudi","Ust. Yahya Irawan","Ust. H. Zainal Abidin","Ust. Zakaria Rahman","Ust. Zakaria Al Anshori, Amd."];
+        
+        // Daftar 78 masjid (disederhanakan)
+        const masjidList = ["ADZIKRU","Al FITRAH - Gang Amalia","AL-AKBAR - Loktuan","AL-AMIN","AL-ANSHAR - Pelabuhan T. Laut","AL-ANSHOR","AL-ANWAR - Loktuan","AL-AQRABUN","AL-ASRI","AL-BAITSU","ALBAROKAH - Gg. Jati","AL-FATTAH - Pisangan","AL-FATTAH - PLTD","AL-HAYYAT","AL-HIDAYAH - Gang Malvinas","AL-HIDAYAH - Gunung Sari","AL-HIJRAH - Sidrap Dalam","AL-HIJRAH - Tanjung Laut","AL-HIKMAH - Guntung","AL-HIKMAH - Loktuan","AL-HIKMAH LETTA - Btg - Smd","AL-IKHLAS - BTN PKT","AL-IKHLAS - Loktuan","AL-ISTIQAMAH - Btg Baru","AL-ISTIQOMAH - Sidrap Luar","AL-JABAL BSD","AL-JIHAD","AL-MISBAH - Btg Kuala","AL-MUBARAK - Depan SMAN 2","AL-MUBARAK","AL-MUFLIHUN","AL-MUHAJIRIN - Bukit Indah","AL-MUKARRAMAH","AL-MUNAWWARAH","AL-MUSTAQIIM","AL-QAHHAR","AL-WAHHAB","AN-NAMIRAH","AS-SALAM - Perum Disnaker","ASY-SYUHADA - Berbas","AT-TANWIR","AT-TAQWA - Salebba","AT-TAUBAH","BABUR RAHMAH","BAITUL IMAN - Lengkol","BAITUL ISLAM - Post 7","BAITUL MAKMUR - Lang-lang","BAITUL MAQDIS","BAITUR RAHIM","DAARUL MUTTAQIN","DAR AL TAWHID","DARUL IRSYAD - Terapung LT","HIBATULLAH","HIBBATUL HAQQI","HIDAYATUL MUSTHOFA","HUBUL IMAN","IBNU SINA - RSUD","JAMIATUL HIKMAH","LAPAS - Bontang Lestari","MIFTAHUL HUDA","MIFTAHUL JANNAH - Guntung","NURUL HIDAYAH - Al-Ihsan","NURUL HUDA - Guntung","RAUDHOTUL JANNAH","RAUDHOTUT THOLIBIN","ROUDLOTUL MUTTAQIN- POLRES","SABILUL MUTTAQIN-Vulkanik 2","SABILUN NAJAH","ULUL ALBAB - Perum Pama","THORIQUL JANNAH - Kanaan"];
+       
+        
+        // Fungsi untuk menampilkan status
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('statusMessage');
+            statusEl.textContent = message;
+            statusEl.className = 'status-message';
+            
+            switch(type) {
+                case 'success':
+                    statusEl.classList.add('status-success');
+                    break;
+                case 'warning':
+                    statusEl.classList.add('status-warning');
+                    break;
+                case 'info':
+                    statusEl.classList.add('status-info');
+                    break;
+            }
+            
+            // Sembunyikan pesan setelah 5 detik
+            setTimeout(() => {
+                statusEl.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Fungsi untuk inisialisasi jadwal awal
+        function initJadwal() {
+            jadwalData = [];
+            jadwalHistory = {};
+            
+            let idCounter = 1;
+            
+            // Inisialisasi data jadwal dengan masjid, kecuali yang dikecualikan
+            masjidList.forEach((masjid) => {
+                // Lewati masjid yang dikecualikan
+                if (excludedMasjids.has(masjid)) {
+                    return;
+                }
+                
+                jadwalData.push({
+                    id: idCounter++,
+                    masjid: masjid,
+                    muballigh: ""
+                });
+                
+                // Inisialisasi history untuk setiap masjid
+                jadwalHistory[masjid] = [];
+            });
+            
+            renderTable();
+            updateStanbyList();
+            updateCounter();
+            updateExclusionList();
+            updateAcakInfo();
+        }
+        
+        // Fungsi untuk merender tabel
+        function renderTable() {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+            
+            jadwalData.forEach(item => {
+                const row = document.createElement('tr');
+                
+                // Tandai baris jika masjid dikecualikan
+                const isExcluded = excludedMasjids.has(item.masjid);
+                const rowStyle = isExcluded ? 'style="background-color: #fff3cd;"' : '';
+                
+                row.innerHTML = `
+                    <td>${item.id}</td>
+                    <td>${item.masjid} ${isExcluded ? '<span class="excluded-badge">DIKECUALIKAN</span>' : ''}</td>
+                    <td>${item.muballigh || '<span style="color:#e74c3c; font-style:italic">Belum ditugaskan</span>'}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            // Tambahkan baris untuk masjid yang dikecualikan
+            if (excludedMasjids.size > 0) {
+                excludedMasjids.forEach(masjid => {
+                    // Cek apakah masjid ini sudah ada di tabel (tidak seharusnya, tapi untuk keamanan)
+                    const existingRow = Array.from(tableBody.querySelectorAll('tr')).find(tr => 
+                        tr.cells[1].textContent.includes(masjid)
+                    );
+                    
+                    if (!existingRow) {
+                        const row = document.createElement('tr');
+                        row.style.backgroundColor = '#fff3cd';
+                        row.innerHTML = `
+                            <td>-</td>
+                            <td>${masjid} <span class="excluded-badge">DIKECUALIKAN</span></td>
+                            <td><span style="color:#7f8c8d; font-style:italic">Tidak dijadwalkan</span></td>
+                        `;
+                        tableBody.appendChild(row);
+                    }
+                });
+            }
+        }
+        
+        // Fungsi untuk memperbarui daftar muballigh standby
+        function updateStanbyList() {
+            const stanbyListEl = document.getElementById('stanbyList');
+            stanbyListEl.innerHTML = '';
+            
+            // Hitung muballigh yang sudah ditugaskan
+            const assignedMuballigh = new Set();
+            jadwalData.forEach(item => {
+                if (item.muballigh) {
+                    assignedMuballigh.add(item.muballigh);
+                }
+            });
+            
+            // Tampilkan muballigh yang belum ditugaskan (standby)
+            const standbyMuballigh = muballighList.filter(m => !assignedMuballigh.has(m));
+            
+            if (standbyMuballigh.length === 0) {
+                stanbyListEl.innerHTML = '<div class="stanby-item">Semua muballigh telah ditugaskan</div>';
+            } else {
+                standbyMuballigh.forEach(muballigh => {
+                    const item = document.createElement('div');
+                    item.className = 'stanby-item';
+                    item.textContent = muballigh;
+                    stanbyListEl.appendChild(item);
+                });
+            }
+        }
+        
+        // Fungsi untuk memperbarui counter
+        function updateCounter() {
+            document.getElementById('acakCounter').textContent = acakCounter;
+        }
+        
+        // Fungsi untuk memperbarui informasi pengacakan
+        function updateAcakInfo() {
+            const acakInfoEl = document.getElementById('acakInfo');
+            const tanggal = document.getElementById('tanggal').value;
+            const btnAcak = document.getElementById('btnAcak');
+            
+            if (!tanggal) {
+                acakInfoEl.innerHTML = 'Pilih tanggal untuk melihat status pengacakan';
+                btnAcak.disabled = true;
+                btnAcak.classList.add('acak-disabled');
+                return;
+            }
+            
+            // Cek apakah tanggal sudah diacak hari ini
+            const isAlreadyAcaked = acakHistory[tanggal] || false;
+            
+            if (isAlreadyAcaked) {
+                acakInfoEl.innerHTML = `<span style="color:#e74c3c;">Tanggal ini sudah diacak. Hanya 1x pengacakan per hari.</span>`;
+                btnAcak.disabled = true;
+                btnAcak.classList.add('acak-disabled');
+            } else {
+                acakInfoEl.innerHTML = `<span style="color:#2ecc71;">Tanggal ini belum diacak. Dapat diacak 1x.</span>`;
+                btnAcak.disabled = false;
+                btnAcak.classList.remove('acak-disabled');
+            }
+        }
+        
+        // Fungsi untuk memperbarui daftar pengecualian
+        function updateExclusionList() {
+            const exclusionListEl = document.getElementById('exclusionList');
+            const noExclusionText = document.getElementById('noExclusionText');
+            const exclusionCountEl = document.getElementById('exclusionCount');
+            
+            // Update counter
+            exclusionCountEl.textContent = `${excludedMasjids.size} masjid dikecualikan`;
+            
+            // Kosongkan daftar
+            exclusionListEl.innerHTML = '';
+            
+            if (excludedMasjids.size === 0) {
+                noExclusionText.style.display = 'inline';
+                exclusionListEl.appendChild(noExclusionText);
+            } else {
+                noExclusionText.style.display = 'none';
+                
+                // Tambahkan setiap masjid yang dikecualikan
+                excludedMasjids.forEach(masjid => {
+                    const item = document.createElement('div');
+                    item.className = 'exclusion-item';
+                    item.innerHTML = `
+                        ${masjid}
+                        <button class="remove-exclusion" data-masjid="${masjid}">&times;</button>
+                    `;
+                    exclusionListEl.appendChild(item);
+                });
+                
+                // Tambahkan event listener untuk tombol hapus
+                document.querySelectorAll('.remove-exclusion').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const masjidToRemove = this.getAttribute('data-masjid');
+                        excludedMasjids.delete(masjidToRemove);
+                        updateExclusionList();
+                        saveExclusionToLocalStorage();
+                        showStatus(`Masjid "${masjidToRemove}" telah dihapus dari daftar pengecualian`, 'info');
+                    });
+                });
+            }
+        }
+        
+        // Fungsi untuk mengacak jadwal
+        function acakJadwal() {
+            const tanggal = document.getElementById('tanggal').value;
+            
+            if (!tanggal) {
+                showStatus("Harap pilih tanggal terlebih dahulu!", 'warning');
+                return;
+            }
+            
+            // Cek apakah tanggal sudah diacak hari ini
+            if (acakHistory[tanggal]) {
+                showStatus("Tanggal ini sudah diacak. Hanya 1x pengacakan per hari.", 'warning');
+                return;
+            }
+            
+            // Cek apakah tanggal berubah
+            if (currentDate !== tanggal) {
+                currentDate = tanggal;
+                acakCounter = 0;
+                initJadwal();
+                
+                // Inisialisasi data untuk tanggal baru
+                if (!jadwalByDate[tanggal]) {
+                    jadwalByDate[tanggal] = {
+                        putaran: [],
+                        history: {}
+                    };
+                    
+                    // Inisialisasi history untuk setiap masjid pada tanggal ini
+                    masjidList.forEach(masjid => {
+                        if (!excludedMasjids.has(masjid)) {
+                            jadwalByDate[tanggal].history[masjid] = [];
+                        }
+                    });
+                }
+                
+                // Load data jika sudah ada
+                if (jadwalByDate[tanggal].putaran.length > 0) {
+                    acakCounter = jadwalByDate[tanggal].putaran.length;
+                    jadwalHistory = JSON.parse(JSON.stringify(jadwalByDate[tanggal].history));
+                    
+                    // Load putaran terakhir
+                    if (acakCounter > 0) {
+                        const lastPutaran = jadwalByDate[tanggal].putaran[acakCounter - 1];
+                        jadwalData = JSON.parse(JSON.stringify(lastPutaran));
+                        renderTable();
+                        updateStanbyList();
+                        updateCounter();
+                        showStatus(`Memuat jadwal untuk ${formatDate(tanggal)} - Putaran ke-${acakCounter}`, 'info');
+                        return;
+                    }
+                }
+            }
+            
+            // Filter masjid yang tidak dikecualikan untuk pengacakan
+            const activeMasjids = jadwalData.filter(item => !excludedMasjids.has(item.masjid));
+            
+            if (activeMasjids.length === 0) {
+                showStatus("Tidak ada masjid yang dapat dijadwalkan. Semua masjid telah dikecualikan.", 'warning');
+                return;
+            }
+            
+            // Salin daftar muballigh untuk diacak
+            let availableMuballigh = [...muballighList];
+            
+            // Acak urutan muballigh dengan algoritma yang berbeda setiap hari
+            const tanggalSeed = new Date(tanggal).getTime();
+            const seedRandom = seededRandom(tanggalSeed);
+            
+            for (let i = availableMuballigh.length - 1; i > 0; i--) {
+                const j = Math.floor(seedRandom() * (i + 1));
+                [availableMuballigh[i], availableMuballigh[j]] = [availableMuballigh[j], availableMuballigh[i]];
+            }
+            
+            // Reset semua penugasan muballigh untuk masjid yang aktif
+            jadwalData.forEach(item => {
+                if (!excludedMasjids.has(item.masjid)) {
+                    item.muballigh = "";
+                }
+            });
+            
+            // Distribusikan muballigh ke masjid aktif dengan aturan khusus
+            let muballighIndex = 0;
+            
+            // Pertama, distribusikan tanpa memperhatikan history
+            for (let i = 0; i < jadwalData.length; i++) {
+                if (excludedMasjids.has(jadwalData[i].masjid)) {
+                    continue; // Lewati masjid yang dikecualikan
+                }
+                
+                if (muballighIndex < availableMuballigh.length) {
+                    jadwalData[i].muballigh = availableMuballigh[muballighIndex];
+                    muballighIndex++;
+                }
+            }
+            
+            // Periksa dan sesuaikan jika ada muballigh di masjid yang sama lebih dari sekali
+            adjustAssignments();
+            
+            // Simpan history penugasan untuk masjid yang aktif
+            jadwalData.forEach(item => {
+                if (item.muballigh && !excludedMasjids.has(item.masjid)) {
+                    if (!jadwalHistory[item.masjid]) {
+                        jadwalHistory[item.masjid] = [];
+                    }
+                    if (!jadwalHistory[item.masjid].includes(item.muballigh)) {
+                        jadwalHistory[item.masjid].push(item.muballigh);
+                    }
+                }
+            });
+            
+            // Update counter
+            acakCounter++;
+            updateCounter();
+            
+            // Tandai tanggal sudah diacak
+            acakHistory[tanggal] = true;
+            
+            // Simpan ke penyimpanan berdasarkan tanggal
+            if (!jadwalByDate[tanggal]) {
+                jadwalByDate[tanggal] = {
+                    putaran: [],
+                    history: {}
+                };
+            }
+            
+            // Simpan putaran baru
+            jadwalByDate[tanggal].putaran.push(JSON.parse(JSON.stringify(jadwalData)));
+            jadwalByDate[tanggal].history = JSON.parse(JSON.stringify(jadwalHistory));
+            
+            // Simpan ke localStorage
+            saveToLocalStorage();
+            
+            // Render ulang tampilan
+            renderTable();
+            updateStanbyList();
+            updateAcakInfo();
+            
+            // Tampilkan pesan sukses dengan info jumlah masjid aktif
+            const activeCount = jadwalData.filter(item => !excludedMasjids.has(item.masjid)).length;
+            const excludedCount = excludedMasjids.size;
+            showStatus(`Jadwal berhasil diacak untuk ${formatDate(tanggal)}. ${activeCount} masjid aktif, ${excludedCount} masjid dikecualikan.`, 'success');
+        }
+        
+        // Fungsi untuk menghasilkan angka acak yang konsisten berdasarkan seed
+        function seededRandom(seed) {
+            return function() {
+                seed = (seed * 9301 + 49297) % 233280;
+                return seed / 233280;
+            };
+        }
+        
+        // Fungsi untuk menyesuaikan penugasan agar tidak ada muballigh di masjid yang sama
+        function adjustAssignments() {
+            // Buat mapping muballigh ke daftar masjid
+            const muballighAssignments = {};
+            
+            // Inisialisasi mapping
+            muballighList.forEach(muballigh => {
+                muballighAssignments[muballigh] = [];
+            });
+            
+            // Kumpulkan data penugasan untuk masjid yang aktif
+            jadwalData.forEach(item => {
+                if (item.muballigh && !excludedMasjids.has(item.masjid)) {
+                    muballighAssignments[item.muballigh].push(item.masjid);
+                }
+            });
+            
+            // Cari dan perbaiki konflik
+            let conflictFixed = false;
+            
+            do {
+                conflictFixed = false;
+                
+                for (let i = 0; i < jadwalData.length; i++) {
+                    const currentItem = jadwalData[i];
+                    const currentMuballigh = currentItem.muballigh;
+                    
+                    // Lewati masjid yang dikecualikan
+                    if (excludedMasjids.has(currentItem.masjid)) continue;
+                    
+                    if (!currentMuballigh) continue;
+                    
+                    // Cek apakah muballigh ini pernah ditugaskan di masjid ini sebelumnya
+                    if (jadwalHistory[currentItem.masjid] && 
+                        jadwalHistory[currentItem.masjid].includes(currentMuballigh)) {
+                        // Cari muballigh lain yang belum pernah di masjid ini
+                        const alternativeMuballigh = muballighList.find(m => 
+                            (!jadwalHistory[currentItem.masjid] || !jadwalHistory[currentItem.masjid].includes(m)) && 
+                            m !== currentMuballigh
+                        );
+                        
+                        if (alternativeMuballigh) {
+                            // Tukar penugasan
+                            const currentMuballighIndex = jadwalData.findIndex(item => 
+                                item.muballigh === alternativeMuballigh &&
+                                !excludedMasjids.has(item.masjid)
+                            );
+                            
+                            if (currentMuballighIndex !== -1) {
+                                // Tukar penugasan
+                                const temp = jadwalData[currentMuballighIndex].muballigh;
+                                jadwalData[currentMuballighIndex].muballigh = currentMuballigh;
+                                currentItem.muballigh = temp;
+                                conflictFixed = true;
+                            }
+                        }
+                    }
+                }
+            } while (conflictFixed);
+        }
+        
+        // Fungsi untuk membuka modal pilihan tanggal PDF
+        function openPdfModal() {
+            // Set tanggal default
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('pdfStartDate').value = today;
+            document.getElementById('pdfEndDate').value = today;
+            
+            // Reset tampilan
+            document.getElementById('singleDateSection').style.display = 'none';
+            document.getElementById('dateRangeInfo').style.display = 'none';
+            document.getElementById('selectedDatesList').style.display = 'none';
+            
+            // Isi dropdown dengan tanggal yang tersedia
+            const pdfTanggalSelect = document.getElementById('pdfTanggal');
+            pdfTanggalSelect.innerHTML = '';
+            
+            const dates = Object.keys(jadwalByDate).sort();
+            
+            if (dates.length === 0) {
+                // Jika tidak ada data, gunakan tanggal saat ini
+                const option = document.createElement('option');
+                option.value = today;
+                option.textContent = formatDate(tanggal) + ' (sedang aktif)';
+                pdfTanggalSelect.appendChild(option);
+            } else {
+                dates.forEach(date => {
+                    const option = document.createElement('option');
+                    option.value = date;
+                    option.textContent = formatDate(date);
+                    if (date === today) option.selected = true;
+                    pdfTanggalSelect.appendChild(option);
+                });
+            }
+            
+            // Isi daftar putaran
+            updatePdfHistoryList();
+            
+            // Tampilkan modal
+            document.getElementById('pdfModal').style.display = 'flex';
+            
+            // Update tampilan berdasarkan rentang tanggal
+            updatePdfDateRangeView();
+        }
+        
+        // Fungsi untuk memperbarui tampilan modal PDF berdasarkan rentang tanggal
+        function updatePdfDateRangeView() {
+            const startDate = document.getElementById('pdfStartDate').value;
+            const endDate = document.getElementById('pdfEndDate').value;
+            
+            // Cek apakah rentang tanggal lebih dari 1 hari
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const diffTime = Math.abs(end - start);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+            
+            if (diffDays > 1) {
+                // Rentang lebih dari 1 hari
+                document.getElementById('singleDateSection').style.display = 'none';
+                document.getElementById('dateRangeInfo').style.display = 'block';
+                
+                // Tampilkan daftar tanggal dalam rentang
+                showSelectedDatesList(startDate, endDate);
+            } else {
+                // Hanya 1 hari
+                document.getElementById('singleDateSection').style.display = 'block';
+                document.getElementById('dateRangeInfo').style.display = 'none';
+                document.getElementById('selectedDatesList').style.display = 'none';
+                
+                // Update dropdown tanggal tunggal
+                const pdfTanggalSelect = document.getElementById('pdfTanggal');
+                pdfTanggalSelect.value = startDate;
+                updatePdfHistoryList();
+            }
+        }
+        
+        // Fungsi untuk menampilkan daftar tanggal yang dipilih
+        function showSelectedDatesList(startDate, endDate) {
+            const selectedDatesListEl = document.getElementById('selectedDatesList');
+            selectedDatesListEl.innerHTML = '';
+            selectedDatesListEl.style.display = 'block';
+            
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const dates = [];
+            
+            // Generate semua tanggal dalam rentang
+            let currentDate = new Date(start);
+            while (currentDate <= end) {
+                dates.push(new Date(currentDate).toISOString().split('T')[0]);
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            
+            // Filter hanya tanggal Jumat
+            const jumatDates = dates.filter(date => {
+                const d = new Date(date);
+                return d.getDay() === 5; // 5 = Jumat
+            });
+            
+            if (jumatDates.length === 0) {
+                selectedDatesListEl.innerHTML = '<div style="padding: 10px; text-align: center; color: #7f8c8d;">Tidak ada hari Jumat dalam rentang tanggal yang dipilih</div>';
+                return;
+            }
+            
+            // Tampilkan daftar tanggal
+            selectedDatesListEl.innerHTML = '<strong>Hari Jumat dalam rentang:</strong>';
+            jumatDates.forEach(date => {
+                const hasData = jadwalByDate[date] && jadwalByDate[date].putaran.length > 0;
+                const dateItem = document.createElement('div');
+                dateItem.className = 'date-item';
+                dateItem.innerHTML = `
+                    ${formatDate(date)} 
+                    <span style="float: right; color: ${hasData ? '#2ecc71' : '#e74c3c'}; font-weight: 600;">
+                        ${hasData ? '✓ Data tersedia' : '✗ Belum diacak'}
+                    </span>
+                `;
+                selectedDatesListEl.appendChild(dateItem);
+            });
+            
+            // Tambahkan info jumlah tanggal
+            const info = document.createElement('div');
+            info.style.marginTop = '10px';
+            info.style.fontSize = '0.9em';
+            info.style.color = '#3498db';
+            info.innerHTML = `Total: ${jumatDates.length} hari Jumat dalam rentang`;
+            selectedDatesListEl.appendChild(info);
+        }
+        
+        // Fungsi untuk memperbarui daftar putaran di modal
+        function updatePdfHistoryList() {
+            const selectedDate = document.getElementById('pdfTanggal').value;
+            const historyListEl = document.getElementById('pdfHistoryList');
+            historyListEl.innerHTML = '';
+            
+            if (!jadwalByDate[selectedDate]) {
+                historyListEl.innerHTML = '<div style="padding: 20px; text-align: center; color: #7f8c8d;">Belum ada data untuk tanggal ini</div>';
+                return;
+            }
+            
+            const putaranList = jadwalByDate[selectedDate].putaran;
+            
+            if (putaranList.length === 0) {
+                historyListEl.innerHTML = '<div style="padding: 20px; text-align: center; color: #7f8c8d;">Belum ada putaran untuk tanggal ini</div>';
+                return;
+            }
+            
+            // Tambahkan setiap putaran (hanya 1 karena maks 1x per hari)
+            putaranList.forEach((putaran, index) => {
+                const item = document.createElement('div');
+                item.className = 'history-item active';
+                item.dataset.putaran = index;
+                item.innerHTML = `
+                    <span class="history-date">Putaran ${index + 1}</span>
+                    <span class="history-count">${formatDate(selectedDate)}</span>
+                `;
+                historyListEl.appendChild(item);
+            });
+        }
+        
+        // Fungsi untuk menghasilkan PDF
+        function generatePDF() {
+            const startDate = document.getElementById('pdfStartDate').value;
+            const endDate = document.getElementById('pdfEndDate').value;
+            
+            if (!startDate || !endDate) {
+                showStatus("Harap pilih rentang tanggal!", 'warning');
+                return;
+            }
+            
+            // Cek apakah rentang tanggal lebih dari 1 hari
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const diffTime = Math.abs(end - start);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+            
+            // Tutup modal
+            document.getElementById('pdfModal').style.display = 'none';
+            
+            // Tampilkan pesan sedang memproses
+            showStatus("Membuat PDF, harap tunggu...", 'info');
+            
+            // Buat PDF berdasarkan rentang tanggal
+            if (diffDays > 1) {
+                createMultiDatePDF(startDate, endDate);
+            } else {
+                // Untuk 1 hari, gunakan putaran yang dipilih
+                const selectedPutaran = document.querySelector('#pdfHistoryList .history-item.active');
+                if (!selectedPutaran) {
+                    showStatus("Pilih putaran yang akan disimpan!", 'warning');
+                    return;
+                }
+                const putaranIndex = selectedPutaran.dataset.putaran;
+                createSingleDatePDF(startDate, putaranIndex);
+            }
+        }
+        
+        // Fungsi untuk membuat PDF untuk satu tanggal
+        function createSingleDatePDF(tanggal, putaranIndex) {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'mm', 'a4');
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+                
+                // Format tanggal untuk judul
+                const formattedDate = formatDate(tanggal);
+                
+                // Judul utama
+                doc.setFontSize(18);
+                doc.setTextColor(44, 62, 80);
+                doc.text("JADWAL KHUTBAH JUMAT LDNU BONTANG", pageWidth / 2, 20, { align: 'center' });
+                
+                // Tanggal
+                doc.setFontSize(14);
+                doc.setTextColor(52, 152, 219);
+                doc.text(`Tanggal: ${formattedDate}`, pageWidth / 2, 30, { align: 'center' });
+                
+                // Informasi pengecualian jika ada
+                doc.setFontSize(10);
+                doc.setTextColor(127, 140, 141);
+                
+                if (excludedMasjids.size > 0) {
+                    doc.text(`${excludedMasjids.size} masjid dikecualikan dari penjadwalan`, pageWidth / 2, 37, { align: 'center' });
+                }
+                
+                let currentY = 45;
+                
+                // Ambil data putaran
+                if (!jadwalByDate[tanggal] || !jadwalByDate[tanggal].putaran[putaranIndex]) {
+                    showStatus("Data tidak ditemukan untuk tanggal yang dipilih!", 'warning');
+                    return;
+                }
+                
+                const putaran = jadwalByDate[tanggal].putaran[putaranIndex];
+                
+                // Siapkan data tabel - hanya masjid aktif
+                const headers = [['No', 'Nama Masjid', 'Nama Muballigh']];
+                const data = [];
+                
+                // Tambahkan masjid aktif
+                let counter = 1;
+                putaran.forEach(item => {
+                    // Hanya tambahkan masjid yang tidak dikecualikan
+                    if (!excludedMasjids.has(item.masjid)) {
+                        data.push([
+                            counter.toString(),
+                            item.masjid,
+                            item.muballigh || 'Belum ditugaskan'
+                        ]);
+                        counter++;
+                    }
+                });
+                
+                // Tambahkan masjid yang dikecualikan di bagian bawah
+                if (excludedMasjids.size > 0) {
+                    // Tambahkan separator
+                    data.push(['', '', '']);
+                    
+                    excludedMasjids.forEach(masjid => {
+                        data.push([
+                            '-',
+                            masjid,
+                            'Tidak dijadwalkan'
+                        ]);
+                    });
+                }
+                
+                // Buat tabel
+                doc.autoTable({
+                    head: headers,
+                    body: data,
+                    startY: currentY,
+                    theme: 'grid',
+                    headStyles: { 
+                        fillColor: [52, 152, 219], 
+                        textColor: [255, 255, 255],
+                        fontSize: 10
+                    },
+                    bodyStyles: { fontSize: 9 },
+                    columnStyles: {
+                        0: { cellWidth: 10 },
+                        1: { cellWidth: 100 },
+                        2: { cellWidth: 70 }
+                    },
+                    margin: { left: 10, right: 10 },
+                    styles: { overflow: 'linebreak' },
+                    didParseCell: function(data) {
+                        // Warna baris untuk masjid yang dikecualikan
+                        if (data.row.index > 0 && data.cell.text[2] === 'Tidak dijadwalkan') {
+                            data.cell.styles.fillColor = [255, 243, 205]; // Kuning muda
+                        }
+                    }
+                });
+                
+                // Update posisi Y setelah tabel
+                currentY = doc.lastAutoTable.finalY + 10;
+                
+                // Hitung muballigh yang sudah ditugaskan
+                const assignedMuballigh = new Set();
+                putaran.forEach(item => {
+                    if (item.muballigh && !excludedMasjids.has(item.masjid)) {
+                        assignedMuballigh.add(item.muballigh);
+                    }
+                });
+                
+                // Tampilkan muballigh standby
+                const standbyMuballigh = muballighList.filter(m => !assignedMuballigh.has(m));
+                
+                if (standbyMuballigh.length > 0 && currentY < pageHeight - 40) {
+                    doc.setFontSize(11);
+                    doc.setTextColor(231, 76, 60);
+                    doc.text("MUBALLIGH STANBY (TIDAK TERJADWAL):", 14, currentY);
+                    currentY += 8;
+                    
+                    doc.setFontSize(9);
+                    doc.setTextColor(0, 0, 0);
+                    
+                    standbyMuballigh.forEach((muballigh, i) => {
+                        if (currentY > pageHeight - 20) {
+                            doc.addPage();
+                            currentY = 20;
+                        }
+                        doc.text(`• ${muballigh}`, 20, currentY);
+                        currentY += 6;
+                    });
+                }
+                
+                // Footer untuk setiap halaman
+                const pageCount = doc.internal.getNumberOfPages();
+                for (let i = 1; i <= pageCount; i++) {
+                    doc.setPage(i);
+                    doc.setFontSize(8);
+                    doc.setTextColor(127, 140, 141);
+                    doc.text(
+                        `Halaman ${i} dari ${pageCount} | Sistem Jadwal Khutbah Jumat | Dicetak: ${new Date().toLocaleString('id-ID')}`,
+                        pageWidth / 2,
+                        pageHeight - 10,
+                        { align: 'center' }
+                    );
+                }
+                
+                // Simpan PDF
+                const fileName = `Jadwal_Khutbah_${tanggal.replace(/-/g, '_')}.pdf`;
+                doc.save(fileName);
+                
+                showStatus(`PDF berhasil disimpan: ${fileName}`, 'success');
+            } catch (error) {
+                console.error("Error creating PDF:", error);
+                showStatus("Terjadi kesalahan saat membuat PDF. Silakan coba lagi.", 'warning');
+            }
+        }
+        
+        // Fungsi untuk membuat PDF untuk rentang tanggal (lebih dari 1 hari)
+        function createMultiDatePDF(startDate, endDate) {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'mm', 'a4');
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+                
+                // Format tanggal untuk judul
+                const formattedStartDate = formatDate(startDate);
+                const formattedEndDate = formatDate(endDate);
+                
+                // Judul utama
+                doc.setFontSize(18);
+                doc.setTextColor(44, 62, 80);
+                doc.text("JADWAL KHUTBAH JUMAT LDNU BONTANG", pageWidth / 2, 20, { align: 'center' });
+                
+                // Rentang tanggal
+                doc.setFontSize(14);
+                doc.setTextColor(52, 152, 219);
+                doc.text(`Rentang: ${formattedStartDate} - ${formattedEndDate}`, pageWidth / 2, 30, { align: 'center' });
+                
+                // Dapatkan semua tanggal Jumat dalam rentang
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+                const jumatDates = [];
+                
+                let currentDate = new Date(start);
+                while (currentDate <= end) {
+                    if (currentDate.getDay() === 5) { // 5 = Jumat
+                        jumatDates.push(new Date(currentDate).toISOString().split('T')[0]);
+                    }
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+                
+                if (jumatDates.length === 0) {
+                    showStatus("Tidak ada hari Jumat dalam rentang tanggal yang dipilih!", 'warning');
+                    return;
+                }
+                
+                // Filter hanya tanggal yang memiliki data
+                const datesWithData = jumatDates.filter(date => 
+                    jadwalByDate[date] && jadwalByDate[date].putaran.length > 0
+                );
+                
+                if (datesWithData.length === 0) {
+                    showStatus("Tidak ada data jadwal dalam rentang tanggal yang dipilih!", 'warning');
+                    return;
+                }
+                
+                // Siapkan data tabel - format per masjid dengan kolom untuk setiap tanggal
+                const headers = ['No', 'Nama Masjid'];
+                
+                // Tambahkan kolom untuk setiap tanggal
+                datesWithData.forEach(date => {
+                    // Format tanggal pendek untuk header kolom
+                    const shortDate = new Date(date).toLocaleDateString('id-ID', {
+                        day: 'numeric',
+                        month: 'short'
+                    });
+                    headers.push(`Jum'at ${shortDate}`);
+                });
+                
+                // Siapkan data
+                const data = [];
+                
+                // Gunakan masjid aktif dari tanggal pertama yang memiliki data
+                const firstDate = datesWithData[0];
+                const firstPutaran = jadwalByDate[firstDate].putaran[0];
+                
+                // Buat mapping masjid ke data untuk semua tanggal
+                const masjidData = {};
+                
+                // Inisialisasi dengan masjid dari tanggal pertama
+                firstPutaran.forEach(item => {
+                    if (!excludedMasjids.has(item.masjid)) {
+                        masjidData[item.masjid] = {
+                            muballighByDate: {}
+                        };
+                        masjidData[item.masjid].muballighByDate[firstDate] = item.muballigh || 'Belum ditugaskan';
+                    }
+                });
+                
+                // Tambahkan data dari tanggal lainnya
+                datesWithData.forEach(date => {
+                    if (jadwalByDate[date] && jadwalByDate[date].putaran.length > 0) {
+                        const putaran = jadwalByDate[date].putaran[0];
+                        putaran.forEach(item => {
+                            if (!excludedMasjids.has(item.masjid)) {
+                                if (!masjidData[item.masjid]) {
+                                    masjidData[item.masjid] = {
+                                        muballighByDate: {}
+                                    };
+                                }
+                                masjidData[item.masjid].muballighByDate[date] = item.muballigh || 'Belum ditugaskan';
+                            }
+                        });
+                    }
+                });
+                
+                // Konversi ke array untuk tabel
+                let counter = 1;
+                for (const masjid in masjidData) {
+                    const row = [counter.toString(), masjid];
+                    
+                    // Tambahkan data muballigh untuk setiap tanggal
+                    datesWithData.forEach(date => {
+                        if (masjidData[masjid].muballighByDate[date]) {
+                            row.push(masjidData[masjid].muballighByDate[date]);
+                        } else {
+                            row.push('-');
+                        }
+                    });
+                    
+                    data.push(row);
+                    counter++;
+                }
+                
+                // Tambahkan masjid yang dikecualikan di bagian bawah
+                if (excludedMasjids.size > 0) {
+                    // Tambahkan separator
+                    data.push(Array(headers.length).fill(''));
+                    
+                    excludedMasjids.forEach(masjid => {
+                        const row = ['-', masjid + ' (Dikecualikan)'];
+                        // Isi kolom tanggal dengan placeholder
+                        for (let i = 2; i < headers.length; i++) {
+                            row.push('Tidak dijadwalkan');
+                        }
+                        data.push(row);
+                    });
+                }
+                
+                // Buat tabel - mulai dari posisi Y yang lebih rendah untuk header yang lebih besar
+                doc.autoTable({
+                    head: [headers],
+                    body: data,
+                    startY: 45,
+                    theme: 'grid',
+                    headStyles: { 
+                        fillColor: [52, 152, 219], 
+                        textColor: [255, 255, 255],
+                        fontSize: 9,
+                        cellWidth: 'auto'
+                    },
+                    bodyStyles: { fontSize: 8 },
+                    columnStyles: {
+                        0: { cellWidth: 10 },
+                        1: { cellWidth: 70 }
+                    },
+                    margin: { left: 5, right: 5 },
+                    styles: { 
+                        overflow: 'linebreak',
+                        cellPadding: 3
+                    },
+                    didParseCell: function(data) {
+                        // Warna baris untuk masjid yang dikecualikan
+                        if (data.row.index > 0 && data.cell.text[1] && data.cell.text[1].includes('Dikecualikan')) {
+                            data.cell.styles.fillColor = [255, 243, 205]; // Kuning muda
+                        }
+                        
+                        // Rotasi teks untuk header tanggal jika terlalu banyak kolom
+                        if (data.row.index === 0 && data.column.index > 1) {
+                            data.cell.styles.halign = 'center';
+                        }
+                    },
+                    willDrawCell: function(data) {
+                        // Rotasi teks untuk header tanggal jika terlalu banyak kolom
+                        if (data.row.index === 0 && data.column.index > 1 && headers.length > 6) {
+                            doc.setFontSize(7);
+                            doc.text(data.cell.text[0], data.cell.x + data.cell.width / 2, data.cell.y + data.cell.height / 2, {
+                                angle: 90,
+                                align: 'center',
+                                baseline: 'middle'
+                            });
+                            return false; // Tidak menggambar teks normal
+                        }
+                    }
+                });
+                
+                // Footer untuk setiap halaman
+                const pageCount = doc.internal.getNumberOfPages();
+                for (let i = 1; i <= pageCount; i++) {
+                    doc.setPage(i);
+                    doc.setFontSize(8);
+                    doc.setTextColor(127, 140, 141);
+                    doc.text(
+                        `Halaman ${i} dari ${pageCount} | Sistem Jadwal Khutbah Jumat | Dicetak: ${new Date().toLocaleString('id-ID')}`,
+                        pageWidth / 2,
+                        pageHeight - 10,
+                        { align: 'center' }
+                    );
+                }
+                
+                // Simpan PDF
+                const fileName = `Jadwal_Khutbah_${startDate.replace(/-/g, '_')}_to_${endDate.replace(/-/g, '_')}.pdf`;
+                doc.save(fileName);
+                
+                showStatus(`PDF berhasil disimpan: ${fileName}`, 'success');
+            } catch (error) {
+                console.error("Error creating PDF:", error);
+                showStatus("Terjadi kesalahan saat membuat PDF. Silakan coba lagi.", 'warning');
+            }
+        }
+        
+        // Fungsi untuk membuka modal pengelolaan pengecualian
+        function openExclusionModal() {
+            // Isi daftar masjid dengan checkbox
+            const masjidListContainer = document.getElementById('masjidListContainer');
+            masjidListContainer.innerHTML = '';
+            
+            // Tambahkan search functionality
+            const searchInput = document.getElementById('masjidSearch');
+            searchInput.value = '';
+            
+            // Render daftar masjid
+            renderMasjidList();
+            
+            // Update counter
+            updateSelectedCount();
+            
+            // Tampilkan modal
+            document.getElementById('exclusionModal').style.display = 'flex';
+        }
+        
+        // Fungsi untuk merender daftar masjid dengan checkbox
+        function renderMasjidList(filter = '') {
+            const masjidListContainer = document.getElementById('masjidListContainer');
+            
+            // Clear existing content (except search box)
+            const searchBox = document.getElementById('masjidSearch');
+            masjidListContainer.innerHTML = '';
+            
+            // Filter masjid berdasarkan pencarian
+            const filteredMasjids = masjidList.filter(masjid => 
+                masjid.toLowerCase().includes(filter.toLowerCase())
+            );
+            
+            if (filteredMasjids.length === 0) {
+                masjidListContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: #7f8c8d;">Tidak ada masjid yang sesuai dengan pencarian</div>';
+                return;
+            }
+            
+            // Tambahkan setiap masjid
+            filteredMasjids.forEach(masjid => {
+                const item = document.createElement('div');
+                item.className = 'masjid-checkbox-item';
+                
+                const checkboxId = `masjid-${masjid.replace(/\s+/g, '-')}`;
+                const isChecked = excludedMasjids.has(masjid);
+                
+                item.innerHTML = `
+                    <input type="checkbox" id="${checkboxId}" ${isChecked ? 'checked' : ''} data-masjid="${masjid}">
+                    <label for="${checkboxId}">${masjid}</label>
+                `;
+                
+                masjidListContainer.appendChild(item);
+                
+                // Tambahkan event listener untuk checkbox
+                const checkbox = item.querySelector('input');
+                checkbox.addEventListener('change', function() {
+                    updateSelectedCount();
+                });
+            });
+        }
+        
+        // Fungsi untuk memperbarui jumlah masjid yang dipilih
+        function updateSelectedCount() {
+            const checkboxes = document.querySelectorAll('#masjidListContainer input[type="checkbox"]');
+            const selectedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+            document.getElementById('selectedCount').textContent = `${selectedCount} masjid dipilih`;
+        }
+        
+        // Fungsi untuk menyimpan pengecualian
+        function saveExclusion() {
+            const checkboxes = document.querySelectorAll('#masjidListContainer input[type="checkbox"]');
+            
+            // Reset set pengecualian
+            excludedMasjids.clear();
+            
+            // Tambahkan masjid yang dicentang
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    excludedMasjids.add(checkbox.getAttribute('data-masjid'));
+                }
+            });
+            
+            // Simpan ke localStorage
+            saveExclusionToLocalStorage();
+            
+            // Update tampilan
+            updateExclusionList();
+            
+            // Perbarui jadwal dengan pengecualian baru
+            initJadwal();
+            
+            // Tutup modal
+            document.getElementById('exclusionModal').style.display = 'none';
+            
+            // Tampilkan pesan sukses
+            showStatus(`Pengecualian berhasil disimpan. ${excludedMasjids.size} masjid dikecualikan dari penjadwalan.`, 'success');
+        }
+        
+        // Fungsi untuk mereset jadwal
+        function resetJadwal() {
+            if (confirm("Apakah Anda yakin ingin mereset jadwal untuk tanggal ini? Semua data untuk tanggal ini akan dihapus.")) {
+                const tanggal = document.getElementById('tanggal').value;
+                
+                if (tanggal) {
+                    // Hapus data untuk tanggal ini
+                    if (jadwalByDate[tanggal]) {
+                        delete jadwalByDate[tanggal];
+                    }
+                    
+                    // Reset status pengacakan untuk tanggal ini
+                    acakHistory[tanggal] = false;
+                    
+                    // Simpan ke localStorage
+                    saveToLocalStorage();
+                }
+                
+                acakCounter = 0;
+                initJadwal();
+                updateAcakInfo();
+                showStatus("Jadwal telah direset untuk tanggal ini.", 'info');
+            }
+        }
+        
+        // Fungsi untuk mengatur tanggal default ke hari Jumat mendatang
+        function setDefaultDate() {
+            const today = new Date();
+            const dayOfWeek = today.getDay(); // 0 = Minggu, 5 = Jumat
+            let daysUntilFriday = 5 - dayOfWeek;
+            
+            if (daysUntilFriday <= 0) {
+                daysUntilFriday += 7; // Jika hari ini adalah Jumat atau setelahnya, pilih Jumat depan
+            }
+            
+            const nextFriday = new Date(today);
+            nextFriday.setDate(today.getDate() + daysUntilFriday);
+            
+            // Format tanggal untuk input date (YYYY-MM-DD)
+            const year = nextFriday.getFullYear();
+            const month = String(nextFriday.getMonth() + 1).padStart(2, '0');
+            const day = String(nextFriday.getDate()).padStart(2, '0');
+            
+            const dateStr = `${year}-${month}-${day}`;
+            document.getElementById('tanggal').value = dateStr;
+            currentDate = dateStr;
+        }
+        
+        // Fungsi untuk memformat tanggal
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('id-ID', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+        
+        // Fungsi untuk menyimpan data ke localStorage
+        function saveToLocalStorage() {
+            try {
+                const dataToSave = {
+                    jadwalByDate: jadwalByDate,
+                    acakHistory: acakHistory,
+                    lastUpdate: new Date().toISOString()
+                };
+                localStorage.setItem('jadwalKhutbahData', JSON.stringify(dataToSave));
+            } catch (error) {
+                console.error("Error saving to localStorage:", error);
+            }
+        }
+        
+        // Fungsi untuk menyimpan data pengecualian ke localStorage
+        function saveExclusionToLocalStorage() {
+            try {
+                const exclusionData = {
+                    excludedMasjids: Array.from(excludedMasjids),
+                    lastUpdate: new Date().toISOString()
+                };
+                localStorage.setItem('jadwalKhutbahExclusions', JSON.stringify(exclusionData));
+            } catch (error) {
+                console.error("Error saving exclusions to localStorage:", error);
+            }
+        }
+        
+        // Fungsi untuk memuat data dari localStorage
+        function loadFromLocalStorage() {
+            try {
+                // Load data jadwal
+                const savedData = localStorage.getItem('jadwalKhutbahData');
+                if (savedData) {
+                    const parsedData = JSON.parse(savedData);
+                    if (parsedData.jadwalByDate) {
+                        jadwalByDate = parsedData.jadwalByDate;
+                    }
+                    if (parsedData.acakHistory) {
+                        acakHistory = parsedData.acakHistory;
+                    }
+                }
+                
+                // Load data pengecualian
+                const savedExclusions = localStorage.getItem('jadwalKhutbahExclusions');
+                if (savedExclusions) {
+                    const parsedExclusions = JSON.parse(savedExclusions);
+                    if (parsedExclusions.excludedMasjids) {
+                        excludedMasjids = new Set(parsedExclusions.excludedMasjids);
+                    }
+                }
+            } catch (error) {
+                console.error("Error loading from localStorage:", error);
+            }
+        }
+        
+        // Inisialisasi saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load data dari localStorage
+            loadFromLocalStorage();
+            
+            // Set tanggal default
+            setDefaultDate();
+            
+            // Inisialisasi jadwal
+            initJadwal();
+            
+            // Event listener untuk tombol acak
+            document.getElementById('btnAcak').addEventListener('click', acakJadwal);
+            
+            // Event listener untuk tombol simpan PDF
+            document.getElementById('btnSimpanPDF').addEventListener('click', openPdfModal);
+            
+            // Event listener untuk tombol reset
+            document.getElementById('btnReset').addEventListener('click', resetJadwal);
+            
+            // Event listener untuk tombol kelola pengecualian
+            document.getElementById('btnKelolaExclusion').addEventListener('click', openExclusionModal);
+            
+            // Event listener untuk perubahan tanggal
+            document.getElementById('tanggal').addEventListener('change', function() {
+                const newDate = this.value;
+                currentDate = newDate;
+                
+                // Update informasi pengacakan
+                updateAcakInfo();
+                
+                // Load data untuk tanggal tersebut jika ada
+                if (jadwalByDate[newDate]) {
+                    acakCounter = jadwalByDate[newDate].putaran.length;
+                    jadwalHistory = JSON.parse(JSON.stringify(jadwalByDate[newDate].history));
+                    
+                    // Load putaran terakhir
+                    if (acakCounter > 0) {
+                        const lastPutaran = jadwalByDate[newDate].putaran[acakCounter - 1];
+                        jadwalData = JSON.parse(JSON.stringify(lastPutaran));
+                        renderTable();
+                        updateStanbyList();
+                        updateCounter();
+                        showStatus(`Memuat jadwal untuk ${formatDate(newDate)}`, 'info');
+                    } else {
+                        acakCounter = 0;
+                        initJadwal();
+                        showStatus(`Menyiapkan jadwal baru untuk ${formatDate(newDate)}`, 'info');
+                    }
+                } else {
+                    // Tanggal baru, reset counter
+                    acakCounter = 0;
+                    initJadwal();
+                    showStatus(`Menyiapkan jadwal baru untuk ${formatDate(newDate)}`, 'info');
+                }
+            });
+            
+            // Event listener untuk modal PDF
+            document.getElementById('closePdfModal').addEventListener('click', function() {
+                document.getElementById('pdfModal').style.display = 'none';
+            });
+            
+            document.getElementById('btnCancelPDF').addEventListener('click', function() {
+                document.getElementById('pdfModal').style.display = 'none';
+            });
+            
+            document.getElementById('btnGeneratePDF').addEventListener('click', generatePDF);
+            
+            // Event listener untuk perubahan rentang tanggal di modal PDF
+            document.getElementById('pdfStartDate').addEventListener('change', updatePdfDateRangeView);
+            document.getElementById('pdfEndDate').addEventListener('change', updatePdfDateRangeView);
+            
+            document.getElementById('pdfTanggal').addEventListener('change', updatePdfHistoryList);
+            
+            // Tutup modal PDF saat klik di luar konten modal
+            document.getElementById('pdfModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+            
+            // Event listener untuk modal pengecualian
+            document.getElementById('closeExclusionModal').addEventListener('click', function() {
+                document.getElementById('exclusionModal').style.display = 'none';
+            });
+            
+            document.getElementById('btnBatalExclusion').addEventListener('click', function() {
+                document.getElementById('exclusionModal').style.display = 'none';
+            });
+            
+            document.getElementById('btnSimpanExclusion').addEventListener('click', saveExclusion);
+            
+            // Event listener untuk pencarian masjid
+            document.getElementById('masjidSearch').addEventListener('input', function() {
+                renderMasjidList(this.value);
+            });
+            
+            // Tutup modal pengecualian saat klik di luar konten modal
+            document.getElementById('exclusionModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+            
+            // Tampilkan pesan selamat datang
+            const excludedCount = excludedMasjids.size;
+            const welcomeMsg = excludedCount > 0 
+                ? `Selamat datang! ${excludedCount} masjid dikecualikan. Silakan pilih tanggal dan klik 'Acak Jadwal' untuk memulai.`
+                : "Selamat datang! Silakan pilih tanggal dan klik 'Acak Jadwal' untuk memulai.";
+            showStatus(welcomeMsg, 'info');
+        });
+    </script>
+</body>
+</html>
